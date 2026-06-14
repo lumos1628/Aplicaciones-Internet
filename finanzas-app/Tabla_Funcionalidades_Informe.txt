@@ -1,0 +1,111 @@
+=====================================================================
+        TABLA DE FUNCIONALIDADES - FINANZAS APP (LABORATORIO)
+=====================================================================
+
++----+------------------------------------+--------------------------+--------------------------------------------------------------------------+
+| #  | Funcionalidad                      | Tipo                     | Comando / Codigo Query Builder                                           |
++----+------------------------------------+--------------------------+--------------------------------------------------------------------------+
+| 1  | Login / Register                   | Breeze (Autenticacion)   | /login , /register                                                       |
+| 2  | Dashboard                          | Resumen general          | /dashboard                                                               |
+| 3  | CRUD Consumidores                  | MVC                      | Route::resource('consumidores', ConsumidorController::class)             |
+| 4  | CRUD Ingresos                      | MVC                      | Route::resource('ingresos', IngresoController::class)                    |
+| 5  | CRUD Gastos                        | MVC                      | Route::resource('gastos', GastoController::class)                        |
+| 6  | Migrar base de datos               | Comando Artisan          | php artisan migrate                                                      |
+| 7  | Poblar 1000 registros por tabla    | Comando Artisan          | php artisan db:seed                                                      |
+| 8  | Compilar CSS/JS (Tailwind + Vite)  | Comando NPM              | npm run build                                                            |
+| 9  | Iniciar servidor de desarrollo      | Comando Artisan          | php artisan serve                                                        |
+| 10 | Consumidores con ingresos           | INNER JOIN               | ->join('ingresos as i', 'c.id', '=', 'i.consumidorId')                  |
+|    |                                    |                          | ->groupBy('c.id', 'c.nombre', 'c.email')                                |
+| 11 | Todos los consumidores con gastos   | LEFT JOIN                | ->leftJoin('gastos as g', 'c.id', '=', 'g.consumidorId')                |
+|    |                                    |                          | ->groupBy('c.id', 'c.nombre', 'c.email')                                |
+| 12 | Balance financiero por consumidor   | LEFT JOIN + Subconsulta  | ->leftJoinSub($ingresosSub, 'ing', fn($j) => $j->on('c.id', '=',        |
+|    |                                    |                          | 'ing.consumidorId'))                                                     |
+| 13 | Ingresos mas altos con consumidor   | INNER JOIN               | ->join('consumidores as c', 'i.consumidorId', '=', 'c.id')              |
+|    |                                    |                          | ->orderByDesc('i.monto')                                                 |
+| 14 | Todos los consumidores con ingresos | RIGHT JOIN               | ->rightJoin('consumidores as c', 'i.consumidorId', '=', 'c.id')         |
+| 15 | Ingresos mensuales por consumidor   | JOIN + GROUP BY          | ->join(...)->groupBy(DB::raw("DATE_FORMAT(i.fecha, '%Y-%m')"))          |
+| 16 | Gastos de Alimentacion             | INNER JOIN + WHERE        | ->join(...)->where('g.categoria', 'Alimentacion')                       |
+| 17 | Total gastado por categoria         | LEFT JOIN + GROUP BY      | ->leftJoin(...)->groupBy('c.nombre', 'g.categoria')                     |
+| 18 | Consumidores que gastaron > S/1000  | JOIN + HAVING             | ->join(...)->having('total_gastado', '>', 1000)                         |
++----+------------------------------------+--------------------------+--------------------------------------------------------------------------+
+
+
+=========================
+COMANDOS DE TERMINAL
+=========================
+
+composer install             # Instalar dependencias PHP
+nvm use 20 && npm install    # Instalar dependencias Node
+npm run build                # Compilar CSS y JS
+php artisan migrate          # Crear todas las tablas
+php artisan db:seed          # Poblar 1000 registros por tabla
+php artisan serve            # Iniciar servidor web
+
+
+=========================
+MODELOS (MVC)
+=========================
+
+Modelo          Tabla           Controlador                  Vistas
+Consumidor      consumidores    ConsumidorController         consumidores/
+Ingreso         ingresos        IngresoController            ingresos/
+Gasto           gastos          GastoController              gastos/
+User            users           (Auth - Breeze)              auth/
+
+
+=========================
+RUTAS PRINCIPALES
+=========================
+
+GET|HEAD /                          welcome
+GET|HEAD /dashboard                 DashboardController@index
+GET|HEAD /consumidores              ConsumidorController@index
+GET|HEAD /consumidores/create       ConsumidorController@create
+POST    /consumidores               ConsumidorController@store
+GET|HEAD /consumidores/{id}         ConsumidorController@show
+GET|HEAD /consumidores/{id}/edit    ConsumidorController@edit
+PUT     /consumidores/{id}          ConsumidorController@update
+DELETE  /consumidores/{id}          ConsumidorController@destroy
+GET|HEAD /ingresos                  IngresoController@index
+GET|HEAD /ingresos/create           IngresoController@create
+POST    /ingresos                   IngresoController@store
+GET|HEAD /ingresos/{id}             IngresoController@show
+GET|HEAD /ingresos/{id}/edit        IngresoController@edit
+PUT     /ingresos/{id}              IngresoController@update
+DELETE  /ingresos/{id}              IngresoController@destroy
+GET|HEAD /gastos                    GastoController@index
+GET|HEAD /gastos/create             GastoController@create
+POST    /gastos                     GastoController@store
+GET|HEAD /gastos/{id}               GastoController@show
+GET|HEAD /gastos/{id}/edit          GastoController@edit
+PUT     /gastos/{id}                GastoController@update
+DELETE  /gastos/{id}                GastoController@destroy
+GET|HEAD /joins                     JoinsController@index
+
+
+=========================
+ESTRUCTURA DE LA BD
+=========================
+
+consumidores
+  - id (PK, BIGINT, AUTO_INCREMENT)
+  - nombre (VARCHAR 255)
+  - email (VARCHAR 255, UNIQUE)
+  - created_at, updated_at (TIMESTAMP)
+
+ingresos
+  - id (PK, BIGINT, AUTO_INCREMENT)
+  - consumidorId (FK -> consumidores.id, BIGINT, UNSIGNED)
+  - monto (DECIMAL 10,2)
+  - fecha (DATE)
+  - descripcion (VARCHAR 255)
+  - created_at, updated_at (TIMESTAMP)
+
+gastos
+  - id (PK, BIGINT, AUTO_INCREMENT)
+  - consumidorId (FK -> consumidores.id, BIGINT, UNSIGNED)
+  - monto (DECIMAL 10,2)
+  - fecha (DATE)
+  - categoria (VARCHAR 255)
+  - descripcion (VARCHAR 255)
+  - created_at, updated_at (TIMESTAMP)

@@ -4,6 +4,7 @@ use App\Http\Controllers\ConsumidorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GastoController;
 use App\Http\Controllers\IngresoController;
+use App\Http\Controllers\JoinsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('consumidores', ConsumidorController::class);
     Route::resource('ingresos', IngresoController::class);
     Route::resource('gastos', GastoController::class);
+
+    Route::get('/joins', [JoinsController::class, 'index'])->name('joins.index');
 });
 
 require __DIR__.'/auth.php';

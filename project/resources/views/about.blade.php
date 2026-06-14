@@ -6,10 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Hola, Gabriel</h1>
+    <h1>Hi, i'm Gabriel</h1>
     <div>
-        <a href="/about">About me</a>
+        <a href="/">Home</a>
     </div>
 </body>
 </html>
->>>>>>> 300ebc8 (laboratorio13)

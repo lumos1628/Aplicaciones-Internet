@@ -19,6 +19,9 @@
                     <x-nav-link :href="route('gastos.index')" :active="request()->routeIs('gastos.*')">
                         Gastos
                     </x-nav-link>
+                    <x-nav-link :href="route('joins.index')" :active="request()->routeIs('joins.*')">
+                        Joins
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -71,6 +74,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('gastos.index')" :active="request()->routeIs('gastos.*')">
                 Gastos
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('joins.index')" :active="request()->routeIs('joins.*')">
+                Joins
             </x-responsive-nav-link>
         </div>
 
